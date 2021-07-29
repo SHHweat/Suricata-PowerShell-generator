@@ -10,3 +10,9 @@ SWsha1 only utilizes pre-generated text files (primarlily from Crowdstrike).
 - DST locations must be set by user
 - $**SIDtxt path must be edited / including *.txt
  
+
+
+v1.1
+
+Added FORMS.ps1
+-Created GUI for scripts
