@@ -1,5 +1,6 @@
 ﻿
 [System.Reflection.Assembly]::LoadWithPartialName("System.Win.Forms")
+[System.Windows.Forms.Application]::EnableVisualStyles()
 $form = New-Object System.Windows.Forms.Form
 $form.Text = "Suricata Alert Generator"
 
@@ -8,32 +9,34 @@ $image = [System.Drawing.Image]::FromFile("$PSScriptRoot\suricata_icon.png")
 $form.BackgroundImage = $image
 $form.BackgroundImageLayout = 'Stretch'
 $form.Size = New-Object System.Drawing.Size(500,600)
+$form.MinimizeBox = $true
+$form.MaximizeBox = $true
 
-#--------------------
+#----------------------------------------------------------------------------------------------------
 
-$Label1 = New-Object System.Windows.Forms.Label
-$Label1.Text = "Alert File: "
-$Label1.Location = New-Object Drawing.Point(10,62)
-$Label1.AutoSize = $true
-$form.Controls.Add($Label1)
+# IMPORT .TXT FILE/ LIST
 
-$selectTextbox = New-object System.Windows.Forms.Textbox
-$selectTextbox.Location = New-Object Drawing.Size(90,60)
-$selectTextbox.Size = New-Object Drawing.Size(180,25)
-$selectTextbox.AutoSize = $true
-$selectTextbox.Multiline =$false
-$selectTextbox.ScrollBars = "Vertical"
-$form.Controls.Add($selectTextbox)
+$IMPORT_Label = New-Object System.Windows.Forms.Label
+$IMPORT_Label.Text = "Import [.txt] File: "
+$IMPORT_Label.Location = New-Object Drawing.Point(10,142)
+$IMPORT_Label.AutoSize = $true
+$form.Controls.Add($IMPORT_Label)
 
-
-$selectButton = New-Object System.Windows.Forms.Button
-$selectButton.Text = "Browse"
-$selectButton.Location = New-Object Drawing.Size(350,60)
-$selectButton.AutoSize = $true
-$form.Controls.Add($selectButton)
+$IMPORT_Textbox = New-object System.Windows.Forms.Textbox
+$IMPORT_Textbox.Location = New-Object Drawing.Size(115,140)
+$IMPORT_Textbox.Size = New-Object Drawing.Size(180,25)
+$IMPORT_Textbox.Multiline =$false
+$form.Controls.Add($IMPORT_Textbox)
 
 
-Function Sel_File($InitialDirectory)
+$IMPORT_Button = New-Object System.Windows.Forms.Button
+$IMPORT_Button.Text = "Browse"
+$IMPORT_Button.Location = New-Object Drawing.Size(300,140)
+$IMPORT_Button.AutoSize = $true
+$form.Controls.Add($IMPORT_Button)
+
+
+Function IMPORT_File($InitialDirectory)
 {
     Add-Type -AssemblyName System.Windows.Forms
     $OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
@@ -47,19 +50,115 @@ Function Sel_File($InitialDirectory)
     }   $Global:SelectedFile = $OpenFileDialog.SafeFileName
     
 }
-$selectButton.Add_Click({Sel_File
-$FileChosen = $selectTextbox.Text = $Global:SelectedFile
+
+$IMPORT_Button.Add_Click({IMPORT_File
+$FileChosen = $IMPORT_Textbox.Text = $Global:SelectedFile
 })
 
-#--------------------
+#----------------------------------------------------------------------------------------------------
+
+<#--------------------
+
+# DROPDOWN ALERT LIST
+
+[array]$ScriptList = "IP", "DOMAIN", "FILES", "HASH", "CUSTOM"
+$alertDropDown = New-Object System.Windows.Forms.ComboBox
+$alertDropDown.Location = New-Object Drawing.Size(90,90)
+$alertDropDown.AutoSize = $true
+foreach ($Script in $ScriptList) {
+$alertDropDown.Items.Add($Script) }
+$form.Controls.Add($alertDropDown)
+
+#--------------------#>
+
+# ALERT RADIO BUTTONS
+# (x,y)
+
+$ALERT_GroupBox = New-Object System.Windows.Forms.GroupBox
+$ALERT_GroupBox.Location = New-Object System.Drawing.Point(90,15)
+$ALERT_GroupBox.Size = New-Object System.Drawing.Size(165,85)
+$ALERT_GroupBox.Text = "Alert Type"
+$form.Controls.Add($ALERT_GroupBox)
+$ALERT_GroupBox.Controls.AddRange(@($IP_Radio,$HASH_Radio,$DOMAIN_Radio,$FILES_Radio))
+
+$IP_Radio = New-Object System.Windows.Forms.RadioButton
+$IP_Radio.Location = New-Object Drawing.Point(5,15)
+$IP_Radio.AutoSize = $true
+$IP_Radio.Text = "IP"
+
+$DOMAIN_Radio = New-Object System.Windows.Forms.RadioButton
+$DOMAIN_Radio.Location = New-Object Drawing.Point(70,15)
+$DOMAIN_Radio.AutoSize = $true
+$DOMAIN_Radio.Text = "DOMAINS"
+
+$HASH_Radio = New-Object System.Windows.Forms.RadioButton
+$HASH_Radio.Location = New-Object Drawing.Point(5,38)
+$HASH_Radio.AutoSize = $true
+$HASH_Radio.Text = "MD5, SHA1, SHA256"
+
+$FILES_Radio = New-Object System.Windows.Forms.RadioButton
+$FILES_Radio.Location = New-Object Drawing.Point(5,61)
+$FILES_Radio.AutoSize = $true
+$FILES_Radio.Text = "FILENAMES (.exe,.ps1,etc.)"
 
 
+#----------------------------------------------------------------------------------------------------
 
+# SID INPUT
 
+$SID_Label = New-Object System.Windows.Forms.Label
+$SID_Label.Location = New-Object System.Drawing.Point(10,200)
+$SID_Label.AutoSize = $true
+$SID_Label.Text = "Enter SID #: "
 
+$SID_Input = New-Object System.Windows.Forms.TextBox
+$SID_Input.Location = New-Object System.Drawing.Point(115,200)
+$SID_Input.AutoSize = $true
+$SID_Input.Text = ""
 
-# add controls.add..buttons/radios/etc. here
-#$form.Controls.AddRange(@())
+$form.Controls.AddRange(@($SID_Input,$SID_Label))
+
+#----------------------------------------------------------------------------------------------------
+
+# OUTPUT DESTINATION
+
+$OUTPUT_Label = New-Object System.Windows.Forms.Label
+$OUTPUT_Label.Text = "Output Destination: "
+$OUTPUT_Label.Location = New-Object System.Drawing.Point(10,250)
+$OUTPUT_Label.AutoSize = $true
+
+$OUTPUT_TextBox = New-Object System.Windows.Forms.TextBox
+$OUTPUT_TextBox.Text = ""
+$OUTPUT_TextBox.Location = New-Object System.Drawing.Point(115,250)
+$OUTPUT_TextBox.Size = New-Object System.Drawing.Size(180,25)
+$OUTPUT_TextBox.Multiline = $false
+
+$OUTPUT_Browse = New-Object System.Windows.Forms.Button
+$OUTPUT_Browse.Text = ".."
+$OUTPUT_Browse.Location = New-Object System.Drawing.Point(300,250)
+$OUTPUT_Browse.AutoSize = $true
+
+$form.Controls.AddRange(@($OUTPUT_Label,$OUTPUT_TextBox,$OUTPUT_Browse))
+
+Function OUTPUT_File($OutputFolder)
+{
+    Add-Type -AssemblyName System.Windows.Forms
+    $FolderBrowserDialog = New-Object System.Windows.Forms.FolderBrowserDialog
+    $OutputFolder = $FolderBrowserDialog.RootFolder 
+    If ($FolderBrowserDialog.ShowDialog() -eq "Cancel") 
+    {
+    [System.Windows.Forms.MessageBox]::Show("No Path Selected. Please select a Destination !", "Error", 0, 
+    [System.Windows.Forms.MessageBoxIcon]::Exclamation)
+    }   $Global:SelectedPath = $FolderBrowserDialog.SelectedPath
+    
+}
+
+$OUTPUT_Browse.Add_Click({OUTPUT_File
+$PathChosen = $OUTPUT_TextBox.Text = $Global:SelectedPath
+})
+
+#----------------------------------------------------------------------------------------------------
+
 
 $form.ShowDialog()
-
+#$form.ShowDialog() | Out-Null
