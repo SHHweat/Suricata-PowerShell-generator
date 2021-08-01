@@ -57,7 +57,7 @@ $FileChosen = $IMPORT_Textbox.Text = $Global:SelectedFile
 
 #----------------------------------------------------------------------------------------------------
 
-<#--------------------
+<#----------------------------------------------------------------------------------------------------
 
 # DROPDOWN ALERT LIST
 
@@ -69,7 +69,7 @@ foreach ($Script in $ScriptList) {
 $alertDropDown.Items.Add($Script) }
 $form.Controls.Add($alertDropDown)
 
-#--------------------#>
+#----------------------------------------------------------------------------------------------------#>
 
 # ALERT RADIO BUTTONS
 # (x,y)
@@ -101,18 +101,25 @@ $FILES_Radio.Location = New-Object Drawing.Point(5,61)
 $FILES_Radio.AutoSize = $true
 $FILES_Radio.Text = "FILENAMES (.exe,.ps1,etc.)"
 
+$Radio_TextBox = New-Object System.Windows.Forms.TextBox
+$Radio_TextBox.Location = New-Object System.Drawing.Point(90,100)
+$Radio_TextBox.AutoSize = $true
+$Radio_TextBox.Text = $ALERT_GroupBox.Controls
+$form.Controls.Add($Radio_TextBox)
+
+#$form.Controls.AddRange(@($IP_Radio, $HASH_Radio, $DOMAIN_Radio, $FILES_Radio))
 
 #----------------------------------------------------------------------------------------------------
 
 # SID INPUT
 
 $SID_Label = New-Object System.Windows.Forms.Label
-$SID_Label.Location = New-Object System.Drawing.Point(10,200)
+$SID_Label.Location = New-Object System.Drawing.Point(10,195)
 $SID_Label.AutoSize = $true
-$SID_Label.Text = "Enter SID #: "
+$SID_Label.Text = "Enter starting SID #: "
 
 $SID_Input = New-Object System.Windows.Forms.TextBox
-$SID_Input.Location = New-Object System.Drawing.Point(115,200)
+$SID_Input.Location = New-Object System.Drawing.Point(115,195)
 $SID_Input.AutoSize = $true
 $SID_Input.Text = ""
 
@@ -133,12 +140,12 @@ $OUTPUT_TextBox.Location = New-Object System.Drawing.Point(115,250)
 $OUTPUT_TextBox.Size = New-Object System.Drawing.Size(180,25)
 $OUTPUT_TextBox.Multiline = $false
 
-$OUTPUT_Browse = New-Object System.Windows.Forms.Button
-$OUTPUT_Browse.Text = ".."
-$OUTPUT_Browse.Location = New-Object System.Drawing.Point(300,250)
-$OUTPUT_Browse.AutoSize = $true
+$OUTPUT_Button = New-Object System.Windows.Forms.Button
+$OUTPUT_Button.Text = ".."
+$OUTPUT_Button.Location = New-Object System.Drawing.Point(300,250)
+$OUTPUT_Button.AutoSize = $true
 
-$form.Controls.AddRange(@($OUTPUT_Label,$OUTPUT_TextBox,$OUTPUT_Browse))
+$form.Controls.AddRange(@($OUTPUT_Label,$OUTPUT_TextBox,$OUTPUT_Button))
 
 Function OUTPUT_File($OutputFolder)
 {
@@ -153,12 +160,42 @@ Function OUTPUT_File($OutputFolder)
     
 }
 
-$OUTPUT_Browse.Add_Click({OUTPUT_File
+$OUTPUT_Button.Add_Click({OUTPUT_File
 $PathChosen = $OUTPUT_TextBox.Text = $Global:SelectedPath
 })
 
 #----------------------------------------------------------------------------------------------------
 
+# CREATE ALERT BUTTON
+
+$CREATE_Button = New-Object System.Windows.Forms.Button
+$CREATE_Button.Text = "Create Alert"
+$CREATE_Button.Location = New-Object System.Drawing.Point(115,290)
+$CREATE_Button.AutoSize = $true
+#$CREATE_Button.DialogResult = [System.Windows.Forms.DialogResult]::OK
+$form.Controls.Add($CREATE_Button)
+$CREATE_Button.Add_Click({$Events})
+
+#----------------------------------------------------------------------------------------------------
+
+
+
+$Events = {
+if ($DOMAIN_Radio.Checked) { Write-Host("You chose domainnnns") }
+    
+    elseif ($HASH_Radio.Checked) { [System.Windows.Forms.MessageBox]::Show("You chose hashes") }
+    elseif ($IP_Radio.Checked) { [System.Windows.Forms.MessageBox]::Show("You chose IP") }
+    }
+
+
+
+
+
+#----------------------------------------------------------------------------------------------------
 
 $form.ShowDialog()
 #$form.ShowDialog() | Out-Null
+
+
+
+
