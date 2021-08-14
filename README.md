@@ -15,6 +15,9 @@ download **TEST-LISTS** folder for testing alert cases
 
 # Instructions
 
+
+run **.\SuricataGUI.ps1**
+
 1.) Choose Alert type :
 
     eg. "DOMAIN"
@@ -42,6 +45,12 @@ download **TEST-LISTS** folder for testing alert cases
   Output
   - Uutput .txt to desired path location.
   - [WIP] export to CSV.
+
+
+
+
+
+
 
 # ToDo
 
