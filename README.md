@@ -15,13 +15,21 @@ download TEST-LISTS folder for testing alert cases
 # Instructions
 
 1.) Choose Alert type :
+
     eg. "DOMAIN"
+    
 2.) Import file list : 
+
     eg. Click "[Browse]" > ".\domain-list.txt"
-3.) Input SID# : 
+    
+3.) Input SID# :
+
     eg. "10"
+    
 4.) Click "[..]" for output destination
+
     eg. Click "[..]" > ".\Desktop"
+    
 5.) Verify desired alerts.txt file
 
 
