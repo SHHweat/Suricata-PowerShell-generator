@@ -7,7 +7,9 @@ Mass produce IDS alerts based on known indicators of compromise (IOC).
 
 download **zip**
 
-download **TEST-LISTS** folder for testing alert cases 
+Right-click SuricataGUI.ps1 >> Properties >> Check [ ] Unblock 
+
+Open SuricataGUI.ps1 w/PoSH ISE >> Run Script (F5)
 
 
 
