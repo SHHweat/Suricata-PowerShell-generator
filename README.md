@@ -5,8 +5,9 @@ Mass produce IDS alerts based on known indicators of compromise (IOC).
 
 # Installation
 
-download SuricataGUI.ps1
-download TEST-LISTS folder for testing alert cases 
+download _**SuricataGUI.ps1**_
+
+download _**TEST-LISTS**_ folder for testing alert cases 
 
 
 
