@@ -1,0 +1,3 @@
+fakefile.exe
+fakefile.dll
+fakefile.rels
