@@ -64,7 +64,7 @@ $alertDropDown_Label.Location = New-Object System.Drawing.Point(10,65)
 $alertDropDown_Label.AutoSize = $true
 $alertDropDown_Label.Text = "Choose alert type: "
 
-[array]$ScriptList = "IP", "DOMAIN","HASH", "FILENAMES-SMB", "FILENAMES-SMTP", "FILENAMES-HTTP", "CUSTOM"
+[array]$ScriptList = "IP", "DOMAIN","HASH", "FILENAMES", "CUSTOM"
 $alertDropDown = New-Object System.Windows.Forms.ComboBox
 $alertDropDown.Location = New-Object Drawing.Point(115,65)
 $alertDropDown.AutoSize = $true
@@ -243,16 +243,12 @@ $DOMAIN_sid_msg = Get-Content $SID_txt
 [System.Windows.MessageBox]::Show("Check $Global:SelectedPath for created alert!")
 }
 
-Function FILES_SMB_TEMPLATE {
+Function FILES_TEMPLATE {
 
 $FILES_Get = Get-Content ($IMPORT_Textbox.Text)
 
-$FILES_String1 = 'alert smb any any -> any any (msg: "TEST"; filename: '
+$FILES_String1 = 'alert ip any any -> any any (msg: "TEST"; filename: '
 $FILES_String2 = '; fileext: "*"; nocase; sid: '
-
-#$FILES_String3 = 'alert smtp any any -> any any (msg: "TEST"; filename: '
-#$FILES_String4 = '; fileext: "*"; nocase; sid: '
-
 
 $FILES_Dst = ($OUTPUT_TextBox.Text) + "\PS-FILENAME-alerts.txt"
 
@@ -268,80 +264,12 @@ $FILES_sid_msg = Get-Content $SID_txt
 
     for ($a =0; $a -lt $FILES_Get.Count; $a++) {
     ( ($FILES_String1) + (('"'),'{0}',('"'),($FILES_String2),'{1}',(';)') -f $FILES_Get[$a],$FILES_sid_msg[$a]) ) | Add-Content $FILES_Dst
-    #( ($FILES_String3) + (('"'),'{0}',('"'),($FILES_String4),'{1}',(';)') -f $FILES_Get[$a],$FILES_sid_msg[$a]) ) | Add-Content $FILES_Dst
     }
     
 
     if ((Test-Path -Path $SID_txt -PathType Leaf)) {rm -Path $SID_txt }
 [System.Windows.MessageBox]::Show("Check $Global:SelectedPath for created alert!")
 }
-
-Function FILES_SMTP_TEMPLATE {
-
-$FILES_Get = Get-Content ($IMPORT_Textbox.Text)
-
-$FILES_String1 = 'alert smtp any any -> any any (msg: "TEST"; filename: '
-$FILES_String2 = '; fileext: "*"; nocase; sid: '
-
-#$FILES_String3 = 'alert smtp any any -> any any (msg: "TEST"; filename: '
-#$FILES_String4 = '; fileext: "*"; nocase; sid: '
-
-
-$FILES_Dst = ($OUTPUT_TextBox.Text) + "\PS-FILENAME-alerts.txt"
-
-$SID_txt = "$PSScriptRoot\sid.txt"
-
-    foreach ($FILE in $FILES_Get.Count) {
-    [int]$SIDCOUNT = ($SID_Input.Text)
-    $FILES_Get.ForEach( {$SIDCOUNT++ | Add-Content $SID_txt} ) 
-    }
-
-$FILES_sid_msg = Get-Content $SID_txt
-
-
-    for ($a =0; $a -lt $FILES_Get.Count; $a++) {
-    ( ($FILES_String1) + (('"'),'{0}',('"'),($FILES_String2),'{1}',(';)') -f $FILES_Get[$a],$FILES_sid_msg[$a]) ) | Add-Content $FILES_Dst
-    #( ($FILES_String3) + (('"'),'{0}',('"'),($FILES_String4),'{1}',(';)') -f $FILES_Get[$a],$FILES_sid_msg[$a]) ) | Add-Content $FILES_Dst
-    }
-    
-
-    if ((Test-Path -Path $SID_txt -PathType Leaf)) {rm -Path $SID_txt }
-[System.Windows.MessageBox]::Show("Check $Global:SelectedPath for created alert!")
-}
-
-Function FILES_HTTP_TEMPLATE {
-
-$FILES_Get = Get-Content ($IMPORT_Textbox.Text)
-
-$FILES_String1 = 'alert http any any -> any any (msg: "TEST"; filename: '
-$FILES_String2 = '; fileext: "*"; nocase; sid: '
-
-#$FILES_String3 = 'alert smtp any any -> any any (msg: "TEST"; filename: '
-#$FILES_String4 = '; fileext: "*"; nocase; sid: '
-
-
-$FILES_Dst = ($OUTPUT_TextBox.Text) + "\PS-FILENAME-alerts.txt"
-
-$SID_txt = "$PSScriptRoot\sid.txt"
-
-    foreach ($FILE in $FILES_Get.Count) {
-    [int]$SIDCOUNT = ($SID_Input.Text)
-    $FILES_Get.ForEach( {$SIDCOUNT++ | Add-Content $SID_txt} ) 
-    }
-
-$FILES_sid_msg = Get-Content $SID_txt
-
-
-    for ($a =0; $a -lt $FILES_Get.Count; $a++) {
-    ( ($FILES_String1) + (('"'),'{0}',('"'),($FILES_String2),'{1}',(';)') -f $FILES_Get[$a],$FILES_sid_msg[$a]) ) | Add-Content $FILES_Dst
-    #( ($FILES_String3) + (('"'),'{0}',('"'),($FILES_String4),'{1}',(';)') -f $FILES_Get[$a],$FILES_sid_msg[$a]) ) | Add-Content $FILES_Dst
-    }
-    
-
-    if ((Test-Path -Path $SID_txt -PathType Leaf)) {rm -Path $SID_txt }
-[System.Windows.MessageBox]::Show("Check $Global:SelectedPath for created alert!")
-}
-
 
 Function HASH_TEMPLATE {
 
@@ -380,11 +308,8 @@ $Events = {
     if ($alertDropDown.Text -like "hash") { HASH_TEMPLATE }    
     elseif ($alertDropDown.Text -like "ip") { IP_TEMPLATE }
     elseif ($alertDropDown.Text -like "domain") { DOMAIN_TEMPLATE }
-    elseif ($alertDropDown.Text -like "filenames-smb") { FILES_SMB_TEMPLATE }
-    elseif ($alertDropDown.Text -like "filenames-smtp") { FILES_SMTP_TEMPLATE }
-    elseif ($alertDropDown.Text -like "filenames-http") { FILES_HTTP_TEMPLATE }
+    elseif ($alertDropDown.Text -like "filenames") { FILES_TEMPLATE }
     elseif ($alertDropDown.Text -like "custom") {[System.Windows.MessageBox]::Show("Not available - WIP","Error") }
-    #elseif ($IP_Radio.Checked) { [System.Windows.Forms.MessageBox]::Show("You chose IP") }
     else { [System.Windows.MessageBox]::Show("You didn't select an alert type", "Error") }
     }
 
